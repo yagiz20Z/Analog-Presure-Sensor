@@ -1,0 +1,81 @@
+/*
+ * APS.c
+ *
+ *  Created on: Jun 27, 2026
+ *      Author: alinux
+ */
+
+
+int __io_putchar(int ch)
+{
+    HAL_UART_Transmit(&huart1, (uint8_t *)&ch, 1, HAL_MAX_DELAY);
+    return ch;
+}
+
+uint32_t Read_ADC_Raw(void)
+{
+    HAL_ADC_Start(&hadc1);
+    HAL_ADC_PollForConversion(&hadc1, HAL_MAX_DELAY);
+    uint32_t raw = HAL_ADC_GetValue(&hadc1);
+    HAL_ADC_Stop(&hadc1);
+
+    return raw;
+}
+
+float ADC_To_Voltage(uint32_t adc_raw)
+{
+    float adc_voltage = ((float)adc_raw * STM32_VREF) / ADC_MAX_VALUE;
+
+    // Voltaj bölücüden dolayı gerçek sensör çıkış voltajını geri hesaplıyoruz
+    float sensor_voltage = adc_voltage * VOLTAGE_DIVIDER_RATIO;
+
+    return sensor_voltage;
+}
+
+float SEN0257_Voltage_To_MPa(float voltage)
+{
+    float pressure_mpa = (voltage - SENSOR_ZERO_VOLTAGE) * SENSOR_SCALE_MPA;
+
+    if (pressure_mpa < 0.0f)
+        pressure_mpa = 0.0f;
+
+    return pressure_mpa;
+}
+
+float SEN0257_Voltage_To_Bar(float voltage)
+{
+    float pressure_mpa = SEN0257_Voltage_To_MPa(voltage);
+    float pressure_bar = pressure_mpa * 10.0f;
+
+    return pressure_bar;
+}
+
+float SEN0257_Depth_From_Surface(float voltage)
+{
+    // Yüzeydeki voltajı 0 metre kabul ediyoruz.
+    float pressure_bar = 4.0f * (voltage - SURFACE_VOLTAGE);
+
+    if (pressure_bar < 0.0f)
+        pressure_bar = 0.0f;
+
+    // Yaklaşık hesap:
+    // Tatlı suda 1 bar ≈ 10.2 metre
+    float depth_meter = pressure_bar * 10.2f;
+
+    return depth_meter;
+}
+
+void APS_init(){
+
+int __io_putchar(int ch);
+
+uint32_t Read_ADC_Raw(void);
+float ADC_To_Voltage(uint32_t adc_raw);
+
+float SEN0257_Voltage_To_MPa(float voltage);
+
+float SEN0257_Voltage_To_Bar(float voltage);
+
+float SEN0257_Depth_From_Surface(float voltage);
+
+}

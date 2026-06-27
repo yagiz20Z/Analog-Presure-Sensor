@@ -1,0 +1,25 @@
+/*
+ * APS.c
+ *
+ *  Created on: Jun 27, 2026
+ *      Author: alinux
+ */
+#include "SoH_APS_Config.h"
+#include "adc.h"
+#include "usart.h"
+
+APS_Config_t aps_config =
+{
+    .hadc = &hadc1,
+    .huart = &huart1,
+
+    .adc_vref = 3.3f,
+    .adc_max = 4095.0f,
+
+    .voltage_divider_ratio = 1.5f,
+
+    .sensor_zero_voltage = 0.5f,
+    .sensor_scale_mpa = 0.4f,
+
+    .surface_voltage = 0.75f
+};
