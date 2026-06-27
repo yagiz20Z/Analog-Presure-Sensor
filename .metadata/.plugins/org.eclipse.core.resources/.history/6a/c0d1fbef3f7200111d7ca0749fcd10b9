@@ -46,67 +46,27 @@ static float APS_VoltageToMPa(APS_Handle_t *aps, float sensor_voltage)
 
 static float APS_VoltageToDepthMeter(APS_Handle_t *aps, float sensor_voltage)
 {
-    float delta_voltage;
     float pressure_bar;
     float depth_meter;
 
-    delta_voltage = sensor_voltage - aps->config.surface_voltage;
+    pressure_bar = 4.0f * (sensor_voltage - aps->config.surface_voltage);
 
-    if (delta_voltage < 0.0f)
+    if (pressure_bar < 0.0f)
     {
-        delta_voltage = 0.0f;
+        pressure_bar = 0.0f;
     }
 
-    /*
-     * SEN0257:
-     * 1 V = 0.4 MPa = 4 bar
-     */
-    pressure_bar = delta_voltage * 4.0f;
-
-    /*
-     * 1 bar ≈ 10.2 metre su
-     */
     depth_meter = pressure_bar * 10.2f;
 
     return depth_meter;
 }
 
-static float APS_ReadRawAverage(APS_Handle_t *aps, uint16_t sample_count)
-{
-    uint32_t sum = 0;
-
-    for (uint16_t i = 0; i < sample_count; i++)
-    {
-        HAL_ADC_Start(aps->config.hadc);
-        HAL_ADC_PollForConversion(aps->config.hadc, HAL_MAX_DELAY);
-        sum += HAL_ADC_GetValue(aps->config.hadc);
-        HAL_ADC_Stop(aps->config.hadc);
-
-        HAL_Delay(2);
-    }
-
-    return (float)sum / (float)sample_count;
-}
-
 void APS_Read(APS_Handle_t *aps)
 {
-    float raw_average;
-
-    if (aps == 0)
-    {
-        return;
-    }
-
-    /*
-     * Tek ADC kanalı kullanılıyor.
-     * 64 defa okunup ortalaması alınıyor.
-     */
-    raw_average = APS_ReadRawAverage(aps, 64);
-
-    aps->data.raw = (uint32_t)(raw_average + 0.5f);
+    aps->data.raw = APS_ReadRaw(aps);
 
     aps->data.adc_voltage =
-        APS_RawToAdcVoltage(aps, raw_average);
+        APS_RawToAdcVoltage(aps, aps->data.raw);
 
     aps->data.sensor_voltage =
         APS_AdcVoltageToSensorVoltage(aps, aps->data.adc_voltage);
@@ -119,7 +79,6 @@ void APS_Read(APS_Handle_t *aps)
 
     aps->data.depth_meter =
         APS_VoltageToDepthMeter(aps, aps->data.sensor_voltage);
-
     aps->data.depth_cm =
         aps->data.depth_meter * 100.0f;
         
@@ -130,8 +89,9 @@ void APS_Print(APS_Handle_t *aps)
     char buffer[150];
 
 snprintf(buffer, sizeof(buffer),
-         "ADC: %lu | Vadc: %.4f V | Vsens: %.4f V | P: %.4f bar | Depth: %.2f cm\r\n",
-         aps->data.raw,
+         "RawAvg: %.2f | RawF: %.2f | Vadc: %.4f V | Vsens: %.4f V | P: %.4f bar | Depth: %.2f cm\r\n",
+         aps->data.raw_average,
+         aps->data.raw_filtered,
          aps->data.adc_voltage,
          aps->data.sensor_voltage,
          aps->data.pressure_bar,
@@ -141,25 +101,4 @@ snprintf(buffer, sizeof(buffer),
                       (uint8_t *)buffer,
                       strlen(buffer),
                       HAL_MAX_DELAY);
-}
-void APS_CalibrateSurface(APS_Handle_t *aps, uint16_t sample_count)
-{
-    float raw_average;
-    float adc_voltage;
-    float sensor_voltage;
-
-    if (aps == 0)
-    {
-        return;
-    }
-
-    raw_average = APS_ReadRawAverage(aps, sample_count);
-
-    adc_voltage =
-        APS_RawToAdcVoltage(aps, raw_average);
-
-    sensor_voltage =
-        APS_AdcVoltageToSensorVoltage(aps, adc_voltage);
-
-    aps->config.surface_voltage = sensor_voltage;
 }

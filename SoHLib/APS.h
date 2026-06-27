@@ -21,6 +21,7 @@ typedef struct
     float pressure_mpa;
     float pressure_bar;
     float depth_meter;
+    float depth_cm;
 } APS_Data_t;
 
 typedef struct

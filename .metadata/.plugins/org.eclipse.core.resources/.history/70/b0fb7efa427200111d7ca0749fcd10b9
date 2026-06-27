@@ -16,7 +16,7 @@ APS_Config_t aps_config =
     .adc_vref = 3.3f,
     .adc_max = 4095.0f,
 
-    .voltage_divider_ratio = 1,
+    .voltage_divider_ratio = 1f,
 
     .sensor_zero_voltage = 0.5f,
     .sensor_scale_mpa = 0.4f,

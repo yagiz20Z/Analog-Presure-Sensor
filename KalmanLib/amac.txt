@@ -1,0 +1,2 @@
+
+sensör  verilerini stabil hale getirmek için kalman filtresi kullanılacaktır

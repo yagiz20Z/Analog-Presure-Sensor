@@ -369,3 +369,7 @@ Voltaj bölücü kullanılmıyorsa:
 ## Lisans
 
 Bu kütüphane proje içi kullanım için hazırlanmıştır. Takım üyeleri tarafından geliştirilebilir, düzenlenebilir ve farklı STM32 projelerine uyarlanabilir.
+
+
+
+## kalman eklenecek

@@ -3,6 +3,8 @@
 ../Core/Src/APS.c:22:14:APS_RawToAdcVoltage	16	static
 ../Core/Src/APS.c:27:14:APS_AdcVoltageToSensorVoltage	16	static
 ../Core/Src/APS.c:32:14:APS_VoltageToMPa	24	static
-../Core/Src/APS.c:47:14:APS_VoltageToDepthMeter	24	static
-../Core/Src/APS.c:64:6:APS_Read	16	static
-../Core/Src/APS.c:84:6:APS_Print	248	static
+../Core/Src/APS.c:47:14:APS_VoltageToDepthMeter	32	static
+../Core/Src/APS.c:74:14:APS_ReadRawAverage	32	static
+../Core/Src/APS.c:91:6:APS_Read	24	static
+../Core/Src/APS.c:128:6:APS_Print	232	static
+../Core/Src/APS.c:145:6:APS_CalibrateSurface	32	static

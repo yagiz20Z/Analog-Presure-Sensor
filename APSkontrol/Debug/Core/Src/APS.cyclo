@@ -4,5 +4,7 @@
 ../Core/Src/APS.c:27:14:APS_AdcVoltageToSensorVoltage	1
 ../Core/Src/APS.c:32:14:APS_VoltageToMPa	2
 ../Core/Src/APS.c:47:14:APS_VoltageToDepthMeter	2
-../Core/Src/APS.c:64:6:APS_Read	1
-../Core/Src/APS.c:84:6:APS_Print	1
+../Core/Src/APS.c:74:14:APS_ReadRawAverage	2
+../Core/Src/APS.c:91:6:APS_Read	2
+../Core/Src/APS.c:128:6:APS_Print	1
+../Core/Src/APS.c:145:6:APS_CalibrateSurface	2

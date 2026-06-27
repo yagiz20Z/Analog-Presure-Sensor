@@ -93,6 +93,10 @@ int main(void)
   MX_USART1_UART_Init();
   /* USER CODE BEGIN 2 */
   APS_Init(&aps, &aps_config);
+
+  HAL_Delay(1000); // sensör otursun
+
+APS_CalibrateSurface(&aps, 100);
   /* USER CODE END 2 */
 
   /* Infinite loop */

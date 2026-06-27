@@ -79,6 +79,7 @@ void APS_Read(APS_Handle_t *aps)
 
     aps->data.depth_meter =
         APS_VoltageToDepthMeter(aps, aps->data.sensor_voltage);
+        
 }
 
 void APS_Print(APS_Handle_t *aps)
